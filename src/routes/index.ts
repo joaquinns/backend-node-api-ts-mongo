@@ -5,10 +5,6 @@ let server: Express = express()
 
 let rootRouter = express.Router()
 
-rootRouter.get('/', (req, res) => {
-  res.send('funziona :D')
-})
-
 server.use('/', rootRouter) // api/
 server.use('/users', userRoutes) // api/users
 
