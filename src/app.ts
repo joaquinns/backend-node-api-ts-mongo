@@ -2,6 +2,9 @@ import cors from 'cors'
 import 'dotenv/config'
 import express, { Express, Response } from 'express'
 import helmet from 'helmet'
+import swaggerUi from 'swagger-ui-express'
+import swaggerSetup from './docs/swagger'
+import ErrorHandler from './middleware/errorHandler'
 import router from './routes/index'
 
 // create server
@@ -17,8 +20,14 @@ app.use(helmet())
 app.use(cors())
 
 // routes
+
 // define /api prefix in all the routes
 app.use('/api', router)
 
+// api documentation endpo
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSetup))
+
+app.use(ErrorHandler)
+
 // redirects
-app.get('/', (_req, res: Response) => res.redirect('/api'))
+app.get('/', (_req, res: Response) => res.redirect('/docs'))
