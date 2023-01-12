@@ -5,7 +5,12 @@ import { bcryptHash, userModel } from '../models/user.model'
 import { updateUserInput } from '../schemas/user.schema'
 import { loggerError, loggerInfo } from '../utils/logger'
 
-export const getUsers = async (page: number, limit: number, id?: string) => {
+export const getUsers = async (
+  page: number,
+  limit: number,
+  next: NextFunction,
+  id?: string | undefined
+) => {
   try {
     if (id) {
       return await userModel.findById(id).select('-password')
@@ -40,15 +45,10 @@ export const createUser = async (
     return await userModel.create(input)
   } catch (error: any) {
     loggerError(`[SERVICE ERROR CREATING USER] ${error}`)
-    throw new Error(error)
   }
 }
 
-export const updateUser = async (
-  id: string,
-  input: updateUserInput,
-  next: NextFunction
-) => {
+export const updateUser = async (id: string, input: updateUserInput) => {
   try {
     if (input.password!) {
       const hashedPassword = await bcryptHash(input.password!)
@@ -60,7 +60,6 @@ export const updateUser = async (
     })
   } catch (error: any) {
     loggerError(`[SERVICE ERROR UPDATING USER] ${error}`)
-    throw new Error(error)
   }
 }
 
