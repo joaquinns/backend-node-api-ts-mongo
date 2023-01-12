@@ -17,10 +17,11 @@ const ErrorHandler = (
   if (!err) {
     next()
   }
-  loggerError(`[MIDDLEWARE ERROR HANDLER] ${err}`)
-  const errStatus = err.statusCode || 500
+  loggerError(`[MIDDLEWARE ERROR HANDLER] ${err.message}`)
+  const errStatus =
+    err.statusCode || (err.message === 'invalid token' && 400) || 500
   const errMsg = err.message || 'Something went wrong'
-  res.status(errStatus).json({
+  return res.status(errStatus).send({
     success: false,
     status: errStatus,
     message: errMsg,
