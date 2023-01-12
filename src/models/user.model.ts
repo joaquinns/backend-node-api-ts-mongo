@@ -1,8 +1,10 @@
 import bcrypt from 'bcrypt'
-import mongoose from 'mongoose'
-import { IUser } from '../interfaces/user.interface'
+import { Model, model, Schema } from 'mongoose'
+import { IUser, IUserMethods } from '../interfaces/user.interface'
 
-const userSchema = new mongoose.Schema<IUser>(
+type UserModel = Model<IUser, {}, IUserMethods>
+
+const userSchema = new Schema<IUser, UserModel, IUserMethods>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -14,20 +16,20 @@ const userSchema = new mongoose.Schema<IUser>(
 )
 
 userSchema.pre('save', async function (next) {
-  let user = this as IUser
-  if (!user.isModified) next()
+  if (!this.isModified) next()
   const salt = await bcrypt.genSalt(10)
-  const hash = bcrypt.hashSync(user.password, salt)
-  user.password = hash
+  const hash = bcrypt.hashSync(this.password, salt)
+  this.password = hash
   return next()
 })
 
-userSchema.methods.comparePasswords = async function (
-  candidatePass: string
-): Promise<boolean> {
-  let user = this as IUser
-  return bcrypt.compare(candidatePass, user.password).catch((e) => false)
-}
+userSchema.method(
+  'comparePasswords',
+  async function (candidatePass: string): Promise<boolean> {
+    let user = this as IUser
+    return bcrypt.compare(candidatePass, user.password).catch((e) => false)
+  }
+)
 
 export const bcryptHash = async (query: string) => {
   const salt = await bcrypt.genSalt(10)
@@ -35,4 +37,4 @@ export const bcryptHash = async (query: string) => {
   return hash
 }
 
-export const userModel = mongoose.model('User', userSchema)
+export const userModel = model<IUser, UserModel>('User', userSchema)
