@@ -10,7 +10,7 @@ import { loggerError } from '../utils/logger'
  */
 const ErrorHandler = (
   err: any,
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -18,14 +18,15 @@ const ErrorHandler = (
     next()
   }
   loggerError(`[MIDDLEWARE ERROR HANDLER] ${err.message}`)
-  const errStatus =
+  const errStatus: number =
     err.statusCode || (err.message === 'invalid token' && 400) || 500
-  const errMsg = err.message || 'Something went wrong'
+  const errMsg: string = err.message || 'Something went wrong'
+  const stack: string = err.stack
   return res.status(errStatus).send({
     success: false,
     status: errStatus,
     message: errMsg,
-    stack: process.env.NODE_ENV === 'development' ? err.stack : {}
+    stack: process.env.NODE_ENV === 'development' ? stack : {}
   })
 }
 
