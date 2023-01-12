@@ -16,18 +16,26 @@ import { loggerError } from '../utils/logger'
  * @param res
  * @returns
  */
-export const getUserHandler = async (req: Request, res: Response) => {
+export const getUserHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     let id = req.query.id as string | undefined
     let page = parseInt(req.query.page as string) || 1
     let limit = parseInt(req.query.limit as string) || 15
-    const users = await getUsers(page, limit, id)
-    if (!users)
-      return res.status(404).json({ error: 'User not found in our records' })
+    const users = await getUsers(page, limit, next, id)
+    if (!users) {
+      throw {
+        statusCode: 404,
+        message: 'User not found in our records'
+      }
+    }
     return res.json(users)
   } catch (error: any) {
     loggerError(`[ERROR CONTROLLER] ${error.message}`)
-    res.status(400).json(error.message)
+    next(error)
   }
 }
 /**
@@ -64,21 +72,24 @@ export const updateUserHandler = async (
 ) => {
   try {
     const id = req.query.id as string
-    if (!id)
-      return res
-        .status(400)
-        .json({ status: 'failed', message: 'You need to pass an id' })
-
+    if (!id) {
+      throw {
+        statusCode: 400,
+        message: 'You need to pass an id'
+      }
+    }
     const foundedUser = await findUserById(id)
-    if (!foundedUser)
-      return res
-        .status(404)
-        .json({ status: 'failed', message: 'User not found in our records' })
-    const updatedUser = await updateUser(id, req.body, next)
+    if (!foundedUser) {
+      throw {
+        statusCode: 404,
+        message: 'User not found in our records'
+      }
+    }
+    const updatedUser = await updateUser(id, req.body)
     return res.json(updatedUser)
   } catch (error: any) {
     loggerError(`[ERROR CONTROLLER] ${error}`)
-    res.status(409).json(error.message)
+    next(error)
   }
 }
 
@@ -99,9 +110,12 @@ export const deleteUserHandler = async (
     const id = req.query.id as string
     const deletedUser = await deleteUser(id, next)
     if (!deletedUser) {
-      throw Error('User not found')
+      throw {
+        statusCode: 404,
+        message: 'User not found in our records'
+      }
     }
-    return res.json({ status: 'success', message: 'Deleted success!' })
+    return res.json({ status: 200, message: 'Deleted success!' })
   } catch (error: any) {
     loggerError(`[ERROR CONTROLLER] ${error}`)
     next(error)
