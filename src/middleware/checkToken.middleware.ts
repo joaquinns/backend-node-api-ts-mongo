@@ -8,7 +8,7 @@ const checkToken = async (req: Request, res: Response, next: NextFunction) => {
     const jwtFromTheUser = req.headers.authorization
     if (!jwtFromTheUser) {
       throw {
-        statusCode: 422,
+        statusCode: 401,
         message: 'Unauthorized'
       }
     }
@@ -16,7 +16,7 @@ const checkToken = async (req: Request, res: Response, next: NextFunction) => {
     const valid = await jwt.verify(token!, process.env.JWT_SECRET || 'secreto')
     if (!valid) {
       throw {
-        statusCode: 422,
+        statusCode: 401,
         message: 'Unauthorized'
       }
     }
