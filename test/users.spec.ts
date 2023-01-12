@@ -1,6 +1,5 @@
-import mongoose from 'mongoose'
 import { userModel } from '../src/models/user.model'
-import { server } from '../src/server'
+import { serverTerminator } from '../src/server'
 import { api, getUsersResponse, initialUsers } from './helper'
 
 beforeEach(async () => {
@@ -110,6 +109,5 @@ test('Delete an user without id or not a valid id would fail', async () => {
 })
 
 afterAll(async () => {
-  await mongoose.connection.close()
-  await server.close()
+  await serverTerminator.terminate()
 })
