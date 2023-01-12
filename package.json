@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "NODE_ENV=development ts-node-dev --respawn --transpile-only src/server.ts",
-    "test": "NODE_ENV=test jest --verbose --silent",
+    "test": "NODE_ENV=test jest --verbose --silent  --maxWorkers=1 --forceExit",
     "test:watch": "npm run test -- --watch"
   },
   "keywords": [],
@@ -17,6 +17,7 @@
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.15",
     "@types/jest": "^29.2.5",
+    "@types/jsonwebtoken": "^9.0.0",
     "@types/node": "^18.11.18",
     "@types/supertest": "^2.0.12",
     "@types/swagger-jsdoc": "^6.0.1",
@@ -40,6 +41,8 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "helmet": "^6.0.1",
+    "http-terminator": "^3.2.0",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.8.2",
     "supertest": "^6.3.3",
     "swagger-jsdoc": "^6.2.7",
