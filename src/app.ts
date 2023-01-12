@@ -11,7 +11,7 @@ import router from './routes/index'
 export const app: Express = express()
 
 // config
-app.set('port', process.env.PORT || 4000)
+app.set('port', process.env.PORT || 8080)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true, limit: '50mb' }))
 
@@ -20,11 +20,10 @@ app.use(helmet())
 app.use(cors())
 
 // routes
-
 // define /api prefix in all the routes
 app.use('/api', router)
 
-// api documentation endpo
+// api documentation endpoint
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSetup))
 
 app.use(ErrorHandler)
