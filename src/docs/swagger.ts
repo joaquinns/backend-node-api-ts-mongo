@@ -32,6 +32,21 @@ const swaggerDefinition: OAS3Definition = {
           },
           password: {
             type: 'string'
+          },
+          passwordConfirmation: {
+            type: 'string'
+          }
+        }
+      },
+      auth: {
+        type: 'object',
+        required: ['email', 'password'],
+        properties: {
+          email: {
+            type: 'string'
+          },
+          password: {
+            type: 'string'
           }
         }
       }
