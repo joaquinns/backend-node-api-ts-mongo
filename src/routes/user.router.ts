@@ -5,6 +5,7 @@ import {
   getUserHandler,
   updateUserHandler
 } from '../controllers/user.controller'
+import checkToken from '../middleware/checkToken.middleware'
 import { validate } from '../middleware/validateResource.middleware'
 import { createUserSchema, updateUserSchema } from '../schemas/user.schema'
 
@@ -88,10 +89,14 @@ userRoutes.route('/').post(validate(createUserSchema), createUserHandler)
  *          description: Validation error trying to save the user in the database
  *        '404':
  *          description: User not found or not valid id
+ *        '401':
+ *          description: Unauthorized to make the request
  *      security:
- *       - ffofofof: []
+ *       - bearerAuth: []
  */
-userRoutes.route('/').put(validate(updateUserSchema), updateUserHandler)
+userRoutes
+  .route('/')
+  .put([checkToken, validate(updateUserSchema)], updateUserHandler)
 /**
  * Delete track
  * @openapi
@@ -115,9 +120,11 @@ userRoutes.route('/').put(validate(updateUserSchema), updateUserHandler)
  *          description: Validation error trying to save the user in the database
  *        '404':
  *          description: User not found or not valid id
+ *        '401':
+ *          description: Unauthorized to make the request
  *      security:
- *       - ffofofof: []
+ *       - bearerAuth: []
  */
-userRoutes.route('/').delete(deleteUserHandler)
+userRoutes.route('/').delete(checkToken, deleteUserHandler)
 
 export default userRoutes
