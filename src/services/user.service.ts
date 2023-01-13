@@ -8,7 +8,6 @@ import { loggerError, loggerInfo } from '../utils/logger'
 export const getUsers = async (
   page: number,
   limit: number,
-  next: NextFunction,
   id?: string | undefined
 ) => {
   try {
@@ -80,10 +79,18 @@ export const deleteUser = async (id: string, next: NextFunction) => {
   }
 }
 
-export const findUserById = async (id: string) => {
+export const findUserById = async (id: string, next: NextFunction) => {
   try {
-    return await userModel.findById(id)
-  } catch (error) {
+    const user = await userModel.findById(id)
+    if (!user) {
+      throw {
+        statusCode: 404,
+        message: 'Not found'
+      }
+    }
+    return user
+  } catch (error: any) {
     loggerError(`${error}`)
+    next(error)
   }
 }
