@@ -1,7 +1,7 @@
 {
   "name": "backend-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "a sample of a backend created with express and typescript",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
@@ -9,8 +9,8 @@
     "test": "NODE_ENV=test jest --verbose --silent  --maxWorkers=1 --forceExit",
     "test:watch": "npm run test -- --watch"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["rest api", "express", "typescript"],
+  "author": "joaquinns",
   "license": "ISC",
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
