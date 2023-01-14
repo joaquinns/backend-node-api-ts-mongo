@@ -54,9 +54,11 @@ export const updateUser = async (id: string, input: updateUserInput) => {
       input.password = hashedPassword
     }
 
-    return await userModel.findByIdAndUpdate(id, input, {
-      returnDocument: 'after'
-    })
+    return await userModel
+      .findByIdAndUpdate(id, input, {
+        returnDocument: 'after'
+      })
+      .select('-password')
   } catch (error: any) {
     loggerError(`[SERVICE ERROR UPDATING USER] ${error}`)
   }
@@ -81,7 +83,7 @@ export const deleteUser = async (id: string, next: NextFunction) => {
 
 export const findUserById = async (id: string, next: NextFunction) => {
   try {
-    const user = await userModel.findById(id)
+    const user = await userModel.findById(id).select('-password')
     if (!user) {
       throw {
         statusCode: 404,
