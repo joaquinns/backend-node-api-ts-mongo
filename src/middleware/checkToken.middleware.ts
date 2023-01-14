@@ -18,10 +18,11 @@ const checkToken = async (
       }
     }
     const token = jwtFromTheUser!.split(' ').pop()
-    const valid = (await jwt.verify(
-      token!,
-      process.env.JWT_SECRET || 'secreto'
-    )) as { id: string; exp: number; iat: number }
+    const valid = (await jwt.verify(token!, <string>process.env.SECRET)) as {
+      id: string
+      exp: number
+      iat: number
+    }
     if (!valid) {
       throw {
         statusCode: 401,
