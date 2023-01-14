@@ -19,7 +19,11 @@ const ErrorHandler = (
   }
   loggerError(`[MIDDLEWARE ERROR HANDLER] ${err.message}`)
   const errStatus: number =
-    err.statusCode || (err.message === 'invalid token' && 400) || 500
+    err.statusCode ||
+    (((err.message === 'invalid token' && 400) ||
+      err.message.includes('Cast to ObjectId failed')) &&
+      404) ||
+    500
   const errMsg: string = err.message || 'Something went wrong'
   const stack: string = err.stack
   return res.status(errStatus).send({
