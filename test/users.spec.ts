@@ -2,13 +2,20 @@ import { userModel } from '../src/models/user.model'
 import { serverTerminator } from '../src/server'
 import { api, getUsersResponse, initialUsers } from './helper'
 
+var jwt: string = 'token'
 beforeEach(async () => {
   await userModel.deleteMany({})
   const firstUser = new userModel(initialUsers[0])
-  await firstUser.save()
+  const savedUser = await firstUser.save()
 
   const secondUser = new userModel(initialUsers[1])
   await secondUser.save()
+
+  const reponse = await api
+    .post('/api/auth/login')
+    .send({ email: savedUser.email, password: '123456' })
+  const { token } = reponse.body
+  jwt = token
 })
 
 test('Users are returned as json format', async () => {
@@ -68,7 +75,11 @@ test('Update an user', async () => {
     name: 'exampleTestName'
   }
 
-  await api.put(`/api/users?id=${userId}`).send(updateInputs).expect(200)
+  await api
+    .put(`/api/users?id=${userId}`)
+    .set('Authorization', `Bearer ${jwt}`)
+    .send(updateInputs)
+    .expect(200)
 
   const { users } = await getUsersResponse()
   const updatedUser = users.filter((user: any) => user._id === userId)
@@ -80,7 +91,11 @@ test('Update an user without id would fail', async () => {
     name: 'exampleTestName'
   }
 
-  await api.put(`/api/users`).send(updateInputs).expect(400)
+  await api
+    .put(`/api/users`)
+    .set('Authorization', `Bearer ${jwt}`)
+    .send(updateInputs)
+    .expect(400)
 })
 
 test('Update an user with a invalid id would fail', async () => {
@@ -88,7 +103,18 @@ test('Update an user with a invalid id would fail', async () => {
   const updateInputs = {
     name: 'exampleTestName'
   }
-  await api.put(`/api/users?id=${id}`).send(updateInputs).expect(404)
+  await api
+    .put(`/api/users?id=${id}`)
+    .set('Authorization', `Bearer ${jwt}`)
+    .send(updateInputs)
+    .expect(404)
+})
+
+test('Delete an user without id or not a valid id would fail', async () => {
+  await api
+    .delete(`/api/users`)
+    .set('Authorization', `Bearer ${jwt}`)
+    .expect(404)
 })
 
 test('Delete an user', async () => {
@@ -96,16 +122,15 @@ test('Delete an user', async () => {
   const usersId = users.map((user: any) => user._id)
   console.log(usersId)
   const userIdToDelete = usersId[0]
-  await api.delete(`/api/users?id=${userIdToDelete}`).expect(200)
+  await api
+    .delete(`/api/users?id=${userIdToDelete}`)
+    .set('Authorization', `Bearer ${jwt}`)
+    .expect(200)
 
   const { users: usersAfterDelete, usersId: usersIdAfterDelete } =
     await getUsersResponse()
   expect(usersAfterDelete).toHaveLength(initialUsers.length - 1)
   expect(usersIdAfterDelete).not.toContain(userIdToDelete)
-})
-
-test('Delete an user without id or not a valid id would fail', async () => {
-  await api.delete(`/api/users`).expect(404)
 })
 
 afterAll(async () => {
