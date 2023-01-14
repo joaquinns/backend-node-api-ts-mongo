@@ -19,7 +19,7 @@ export const getUsers = async (
     limit < 1 ? (limit = 1) : page
     const users = await userModel
       .find({ isDelete: false })
-      // .select('-password')
+      .select('-password')
       .limit(limit)
       .skip((page - 1) * limit)
       .exec()
