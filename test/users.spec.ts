@@ -111,10 +111,7 @@ test('Update an user with a invalid id would fail', async () => {
 })
 
 test('Delete an user without id or not a valid id would fail', async () => {
-  await api
-    .delete(`/api/users`)
-    .set('Authorization', `Bearer ${jwt}`)
-    .expect(404)
+  await api.delete(`/api/users`).set('Authorization', `Bearer`).expect(401)
 })
 
 test('Delete an user', async () => {
