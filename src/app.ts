@@ -1,4 +1,3 @@
-import cors from 'cors'
 import 'dotenv/config'
 import express, { Express, Response } from 'express'
 import helmet from 'helmet'
@@ -17,7 +16,7 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }))
 
 // security
 app.use(helmet())
-app.use(cors())
+// app.use(cors())
 
 // routes
 // define /api prefix in all the routes
