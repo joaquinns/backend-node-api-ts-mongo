@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import { NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import { userModel } from '../models/user.model'
@@ -28,7 +29,7 @@ export const authLogin = async (auth: authLoginInput, next: NextFunction) => {
       {
         id: foundedUser.id
       },
-      'secreto',
+      <string>process.env.SECRET,
       {
         expiresIn: 86400
       }
