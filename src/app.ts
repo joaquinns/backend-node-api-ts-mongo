@@ -26,7 +26,7 @@ app.use('/api', router)
 app.use(
   '/docs',
   swaggerUi.serve,
-  express.static('/swagger/statics/', { index: false }),
+  express.static('/swagger/static/index.html', { index: false }),
   swaggerUi.setup(swaggerSetup)
 )
 
