@@ -1,4 +1,10 @@
 {
   "public": false,
-  "outputDirectory": "./build"
+  "outputDirectory": "./build",
+  "builds": [
+    {
+        "src": "./index.js",
+        "use": "@vercel/node"
+    }
+   ]
 }

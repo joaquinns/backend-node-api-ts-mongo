@@ -1,5 +1,5 @@
+import { serverTerminator } from '../src'
 import { userModel } from '../src/models/user.model'
-import { serverTerminator } from '../src/server'
 import { api, getUsersResponse, initialUsers } from './helper'
 
 var jwt: string = 'token'
