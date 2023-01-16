@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/src/server.js",
+    "start": "node build/src/server.js",
     "dev": "NODE_ENV=development ts-node-dev --respawn --transpile-only src/server.ts",
     "test": "NODE_ENV=test jest --verbose --silent  --maxWorkers=1 --forceExit",
     "test:watch": "npm run test -- --watch"
