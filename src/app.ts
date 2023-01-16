@@ -23,7 +23,12 @@ app.use(helmet())
 app.use('/api', router)
 
 // api documentation endpoint
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSetup))
+app.use(
+  '/docs',
+  swaggerUi.serve,
+  express.static('/swagger/statics/', { index: false }),
+  swaggerUi.setup(swaggerSetup)
+)
 
 app.use(ErrorHandler)
 
