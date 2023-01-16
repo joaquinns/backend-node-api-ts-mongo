@@ -1,9 +1,8 @@
 {
     "version": 2,
-  "outputDirectory": "./build",
   "builds": [
     {
-        "src": "./index.js",
+        "src": "build/index.js",
         "use": "@vercel/node",
          "config": { "includeFiles": ["build/**"] }
     }
